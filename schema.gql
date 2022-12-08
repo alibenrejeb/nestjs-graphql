@@ -22,6 +22,16 @@ type Article {
   image: String!
 }
 
+type User {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  email: String!
+  firstname: String!
+  lastname: String!
+  avatar: String
+}
+
 type ArticleDeleteOutput {
   articleId: ID!
 }
@@ -37,6 +47,14 @@ type ArticleUpdateOutput {
 type ArticlesPaginator {
   total: Float!
   results: [Article!]!
+}
+
+type UserCreateOutput {
+  user: User!
+}
+
+type AuthLoginOutput {
+  accessToken: String!
 }
 
 type Query {
@@ -57,6 +75,8 @@ type Mutation {
   articleCreate(input: ArticleCreateInput!): ArticleCreateOutput!
   articleUpdate(articleId: ID!, input: ArticleUpdateInput!): ArticleUpdateOutput!
   articleDelete(articleId: ID!): ArticleDeleteOutput!
+  userCreate(input: UserCreateInput!): UserCreateOutput!
+  login(username: String!, password: String!): AuthLoginOutput!
 }
 
 input ArticleCreateInput {
@@ -69,4 +89,12 @@ input ArticleUpdateInput {
   title: String!
   description: String!
   image: String!
+}
+
+input UserCreateInput {
+  email: String!
+  password: String!
+  firstname: String!
+  lastname: String!
+  avatar: String
 }
