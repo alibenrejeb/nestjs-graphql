@@ -24,7 +24,10 @@ export class ArticleManager {
     private readonly articleRepository: Repository<Article>,
   ) {}
 
-  async create(user: any, input: ArticleCreateInput): Promise<ArticleCreateOutput> {
+  async create(
+    user: any,
+    input: ArticleCreateInput,
+  ): Promise<ArticleCreateOutput> {
     const article = this.articleRepository.create(input);
     article.author = new User();
     article.author.id = user.userId;

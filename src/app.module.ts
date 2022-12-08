@@ -17,6 +17,7 @@ import { AuthService } from './services/auth.service';
 import { LocalStrategy } from './auths/strategies/local.strategy';
 import { JwtStrategy } from './auths/strategies/jwt.strategy';
 import { AuthMutationsResolver } from './resolvers/auth/mutations.resolver';
+import { ArticleFieldsResolver } from './resolvers/article/fields.resolver';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { AuthMutationsResolver } from './resolvers/auth/mutations.resolver';
     LocalStrategy,
     JwtStrategy,
     AuthMutationsResolver,
+    ArticleFieldsResolver
   ],
 })
 export class AppModule {}

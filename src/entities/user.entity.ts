@@ -26,5 +26,5 @@ export class User extends AbstractEntity {
   avatar?: string;
 
   @OneToMany(() => Article, (target) => target.author)
-  articles: Article[]
+  articles: Article[];
 }

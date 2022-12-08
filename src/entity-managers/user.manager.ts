@@ -26,4 +26,12 @@ export class UserManager {
       },
     });
   }
+
+  async findOneById(id: string): Promise<User> {
+    return this.userRepository.findOneOrFail({
+      where: {
+        id,
+      },
+    });
+  }
 }
