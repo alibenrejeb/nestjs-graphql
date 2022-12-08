@@ -4,9 +4,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-import { AppController } from './app.controller';
-import { AppResolver } from './app.resolver';
-import { AppService } from './app.service';
+import { ArticleManager } from './entity-managers/article.manager';
+import { Article } from './entities/article.entity';
+import { ArticleMutationsResolver } from './resolvers/article/mutations.resolver';
+import { ArticleQueriesResolver } from './resolvers/article/queries.resolver';
 
 @Module({
   imports: [
@@ -25,12 +26,13 @@ import { AppService } from './app.service';
         username: configService.get('DATABASE_USER'),
         password: configService.get('DATABASE_PASSWORD'),
         database: configService.get('DATABASE_DB'),
-        entities: [join(__dirname, '**', '*.model.{ts,js}')],
+        entities: [join(__dirname, '**', '*.entity.{ts,js}')],
         synchronize: true,
       }),
     }),
+    TypeOrmModule.forFeature([Article]),
   ],
-  controllers: [AppController],
-  providers: [AppService, AppResolver],
+  controllers: [],
+  providers: [ArticleManager, ArticleMutationsResolver, ArticleQueriesResolver],
 })
 export class AppModule {}

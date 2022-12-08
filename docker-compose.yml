@@ -3,7 +3,7 @@ services:
   postgres:
     image: postgres:13
     hostname: postgres
-    container_name: neko-social-postgres
+    container_name: social-network-postgres
     restart: always
     ports:
       - 5432:5432
