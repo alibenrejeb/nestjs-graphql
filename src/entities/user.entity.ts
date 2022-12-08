@@ -1,6 +1,7 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { AbstractEntity } from './abstract.entity';
+import { Article } from './article.entity';
 
 @Entity()
 @ObjectType()
@@ -23,4 +24,7 @@ export class User extends AbstractEntity {
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   avatar?: string;
+
+  @OneToMany(() => Article, (target) => target.author)
+  articles: Article[]
 }

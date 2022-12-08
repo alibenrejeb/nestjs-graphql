@@ -15,6 +15,7 @@ import {
   ArticlesPaginator,
   ArticlesPaginatorArgs,
 } from '../paginator/article.paginator';
+import { User } from './../entities/user.entity';
 
 @Injectable()
 export class ArticleManager {
@@ -23,9 +24,11 @@ export class ArticleManager {
     private readonly articleRepository: Repository<Article>,
   ) {}
 
-  async create(input: ArticleCreateInput): Promise<ArticleCreateOutput> {
-    const newArticle = this.articleRepository.create(input);
-    const article = await this.articleRepository.save(newArticle);
+  async create(user: any, input: ArticleCreateInput): Promise<ArticleCreateOutput> {
+    const article = this.articleRepository.create(input);
+    article.author = new User();
+    article.author.id = user.userId;
+    await article.save();
     return { article };
   }
 
