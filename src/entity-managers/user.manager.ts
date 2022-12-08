@@ -6,6 +6,7 @@ import {
   UserCreateInput,
   UserCreateOutput,
 } from './../models/user/create.model';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserManager {
@@ -15,6 +16,7 @@ export class UserManager {
   ) {}
 
   async create(input: UserCreateInput): Promise<UserCreateOutput> {
+    input.password = bcrypt.hashSync(input.password);
     const user = await this.userRepository.create(input).save();
     return { user };
   }

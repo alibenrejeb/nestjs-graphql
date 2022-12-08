@@ -13,6 +13,24 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Comment {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  message: String!
+  author: User
+}
+
+type User {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  email: String!
+  firstname: String!
+  lastname: String!
+  avatar: String
+}
+
 type Article {
   id: ID!
   createdAt: DateTime!
@@ -31,24 +49,6 @@ input PaginatorSortBy {
 enum SortBy {
   ASC
   DESC
-}
-
-type User {
-  id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  email: String!
-  firstname: String!
-  lastname: String!
-  avatar: String
-}
-
-type Comment {
-  id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  message: String!
-  author: User
 }
 
 type ArticleDeleteOutput {
@@ -74,6 +74,7 @@ type UserCreateOutput {
 
 type AuthLoginOutput {
   accessToken: String!
+  refreshToken: String!
 }
 
 type CommentsPaginator {
@@ -83,6 +84,10 @@ type CommentsPaginator {
 
 type CommentCreateOutput {
   comment: Comment!
+}
+
+type AuthTokenOutput {
+  accessToken: String!
 }
 
 type Query {
@@ -102,6 +107,7 @@ type Mutation {
   userCreate(input: UserCreateInput!): UserCreateOutput!
   commentCreate(input: CommentCreateInput!): CommentCreateOutput!
   login(username: String!, password: String!): AuthLoginOutput!
+  refreshedAccesToken(input: AuthTokenInput!): AuthTokenOutput!
 }
 
 input ArticleCreateInput {
@@ -127,4 +133,8 @@ input UserCreateInput {
 input CommentCreateInput {
   message: String!
   articleId: String!
+}
+
+input AuthTokenInput {
+  refreshToken: String!
 }

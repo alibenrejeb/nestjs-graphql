@@ -32,6 +32,8 @@
     "@nestjs/platform-express": "^9.2.1",
     "@nestjs/typeorm": "^9.0.1",
     "apollo-server-express": "^3.6.7",
+    "bcryptjs": "^2.4.3",
+    "crypto": "^1.0.1",
     "graphql": "^16.6.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
