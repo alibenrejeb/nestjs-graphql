@@ -30,6 +30,9 @@ export class PaginatorArgs {
 
   @Field(() => Int)
   take: number;
+
+  @Field(() => PaginatorSortBy, { nullable: true })
+  sortBy?: PaginatorSortBy;
 }
 
 @InterfaceType()

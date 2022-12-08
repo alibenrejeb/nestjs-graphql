@@ -1,3 +1,4 @@
+import { CommentFieldsResolver } from './resolvers/comment/fields.resolver';
 import { PassportModule } from '@nestjs/passport';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
@@ -9,6 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ArticleManager } from './entity-managers/article.manager';
 import { Article } from './entities/article.entity';
 import { User } from './entities/user.entity';
+import { Comment } from './entities/comment.entity';
 import { ArticleMutationsResolver } from './resolvers/article/mutations.resolver';
 import { ArticleQueriesResolver } from './resolvers/article/queries.resolver';
 import { UserMutationsResolver } from './resolvers/user/mutations.resolver';
@@ -18,6 +20,9 @@ import { LocalStrategy } from './auths/strategies/local.strategy';
 import { JwtStrategy } from './auths/strategies/jwt.strategy';
 import { AuthMutationsResolver } from './resolvers/auth/mutations.resolver';
 import { ArticleFieldsResolver } from './resolvers/article/fields.resolver';
+import { CommentManager } from './entity-managers/comment.manager';
+import { CommentMutationsResolver } from './resolvers/comment/mutations.resolver';
+import { CommentQueriesResolver } from './resolvers/comment/queries.resolver';
 
 @Module({
   imports: [
@@ -41,7 +46,7 @@ import { ArticleFieldsResolver } from './resolvers/article/fields.resolver';
         synchronize: true,
       }),
     }),
-    TypeOrmModule.forFeature([Article, User]),
+    TypeOrmModule.forFeature([Article, User, Comment]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -58,11 +63,15 @@ import { ArticleFieldsResolver } from './resolvers/article/fields.resolver';
     ArticleQueriesResolver,
     UserManager,
     UserMutationsResolver,
+    CommentManager,
+    CommentMutationsResolver,
     AuthService,
     LocalStrategy,
     JwtStrategy,
     AuthMutationsResolver,
-    ArticleFieldsResolver
+    ArticleFieldsResolver,
+    CommentFieldsResolver,
+    CommentQueriesResolver,
   ],
 })
 export class AppModule {}

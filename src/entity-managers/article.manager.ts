@@ -1,3 +1,4 @@
+import { CommentsPaginator } from './../paginator/comment.paginator';
 import {
   ArticleUpdateInput,
   ArticleUpdateOutput,
@@ -16,13 +17,25 @@ import {
   ArticlesPaginatorArgs,
 } from '../paginator/article.paginator';
 import { User } from './../entities/user.entity';
+import { Comment } from './../entities/comment.entity';
+import { PaginatorArgs } from './../paginator/paginator';
 
 @Injectable()
 export class ArticleManager {
   constructor(
     @InjectRepository(Article)
     private readonly articleRepository: Repository<Article>,
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
   ) {}
+
+  async findOneById(id: string): Promise<Article> {
+    return this.articleRepository.findOneOrFail({
+      where: {
+        id,
+      },
+    });
+  }
 
   async create(
     user: any,
@@ -77,6 +90,26 @@ export class ArticleManager {
     }
 
     const [results, total] = await queryBuilder.getManyAndCount();
+
+    return { results, total };
+  }
+
+  async comments(
+    articleId: string,
+    args: PaginatorArgs,
+  ): Promise<CommentsPaginator> {
+    const [results, total] = await this.commentRepository.findAndCount({
+      skip: args.skip,
+      take: args.take,
+      where: {
+        article: {
+          id: articleId,
+        },
+      },
+      order: {
+        createdAt: args.sortBy?.createdAt ? 'DESC' : 'ASC',
+      },
+    });
 
     return { results, total };
   }

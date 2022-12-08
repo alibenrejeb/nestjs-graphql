@@ -1,7 +1,15 @@
-import { Entity, Column, JoinColumn, ManyToOne, RelationId } from 'typeorm';
+import {
+  Entity,
+  Column,
+  JoinColumn,
+  ManyToOne,
+  RelationId,
+  OneToMany,
+} from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { AbstractEntity } from './abstract.entity';
 import { User } from './user.entity';
+import { Comment } from './comment.entity';
 
 @Entity()
 @ObjectType()
@@ -24,4 +32,7 @@ export class Article extends AbstractEntity {
 
   @RelationId((self: Article) => self.author)
   readonly authorId: string;
+
+  @OneToMany(() => Comment, (target) => target.article)
+  comments: Comment[];
 }

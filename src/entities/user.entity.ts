@@ -2,6 +2,7 @@ import { Entity, Column, OneToMany } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { AbstractEntity } from './abstract.entity';
 import { Article } from './article.entity';
+import { Comment } from './comment.entity';
 
 @Entity()
 @ObjectType()
@@ -27,4 +28,7 @@ export class User extends AbstractEntity {
 
   @OneToMany(() => Article, (target) => target.author)
   articles: Article[];
+
+  @OneToMany(() => Comment, (target) => target.author)
+  comments: Comment[];
 }
