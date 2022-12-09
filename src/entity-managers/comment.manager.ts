@@ -10,6 +10,7 @@ import {
 import { ArticleManager } from './article.manager';
 import { CommentsPaginator } from './../paginator/comment.paginator';
 import { PaginatorArgs } from './../paginator/paginator';
+import { JwtUser } from './../models/user/jwt-user.model';
 
 @Injectable()
 export class CommentManager {
@@ -20,48 +21,20 @@ export class CommentManager {
   ) {}
 
   async create(
-    user: any,
+    user: JwtUser,
     input: CommentCreateInput,
   ): Promise<CommentCreateOutput> {
     const article = await this.articleManager.findOneById(input.articleId);
     const comment = this.commentRepository.create(input);
     comment.author = new User();
-    comment.author.id = user.userId;
+    comment.author.id = user.sub;
     comment.article = article;
     comment.message = input.message;
     await comment.save();
     return { comment };
   }
 
-  // async update(
-  //   articleId: string,
-  //   input: ArticleUpdateInput,
-  // ): Promise<ArticleUpdateOutput> {
-  //   const article = await this.articleRepository.findOneOrFail({
-  //     where: {
-  //       id: articleId,
-  //     },
-  //   });
-
-  //   article.title = input.title;
-  //   article.description = input.description;
-  //   article.image = input.image;
-  //   await article.save();
-  //   return { article };
-  // }
-
-  // async delete(articleId: string): Promise<ArticleDeleteOutput> {
-  //   const article = await this.articleRepository.findOneOrFail({
-  //     where: {
-  //       id: articleId,
-  //     },
-  //   });
-
-  //   await article.remove();
-  //   return { articleId };
-  // }
-
-  async comments(args: PaginatorArgs): Promise<CommentsPaginator> {
+  async findAll(args: PaginatorArgs): Promise<CommentsPaginator> {
     const queryBuilder = this.commentRepository.createQueryBuilder('comment');
     queryBuilder.take(args.take).skip(args.skip);
 

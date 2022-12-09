@@ -29,6 +29,10 @@ export class AuthService {
       userId: user.id,
     });
 
+    const searchUser = await this.userManager.findOneById(user.id);
+    searchUser.lastLoggedAt = new Date();
+    await searchUser.save();
+
     return {
       accessToken: this.jwtService.sign({
         email: user.email,
@@ -41,10 +45,12 @@ export class AuthService {
   }
 
   async generate(input: AuthTokenInput) {
-    const refreshToken = await this.refreshTokenManager.findOneByToken(input.refreshToken);
+    const refreshToken = await this.refreshTokenManager.findOneByToken(
+      input.refreshToken,
+    );
 
     if (!refreshToken) {
-      throw new NotFoundException()
+      throw new NotFoundException();
     }
 
     const user = await this.userManager.findOneById(refreshToken.userId);
@@ -55,9 +61,7 @@ export class AuthService {
         sub: user.id,
         firstname: user.firstname,
         lastname: user.lastname,
-      })
+      }),
     };
-
   }
-
 }

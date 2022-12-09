@@ -1,3 +1,4 @@
+import { JwtUser } from './../models/user/jwt-user.model';
 import { CommentsPaginator } from './../paginator/comment.paginator';
 import {
   ArticleUpdateInput,
@@ -7,7 +8,7 @@ import {
   ArticleCreateInput,
   ArticleCreateOutput,
 } from '../models/article/create.model';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from '../entities/article.entity';
 import { Repository } from 'typeorm';
@@ -30,20 +31,26 @@ export class ArticleManager {
   ) {}
 
   async findOneById(id: string): Promise<Article> {
-    return this.articleRepository.findOneOrFail({
+    const article = this.articleRepository.findOne({
       where: {
         id,
       },
     });
+
+    if (!article) {
+      throw new NotFoundException(`Article ${id} not found`);
+    }
+
+    return article;
   }
 
   async create(
-    user: any,
+    user: JwtUser,
     input: ArticleCreateInput,
   ): Promise<ArticleCreateOutput> {
     const article = this.articleRepository.create(input);
     article.author = new User();
-    article.author.id = user.userId;
+    article.author.id = user.sub;
     await article.save();
     return { article };
   }
@@ -52,11 +59,15 @@ export class ArticleManager {
     articleId: string,
     input: ArticleUpdateInput,
   ): Promise<ArticleUpdateOutput> {
-    const article = await this.articleRepository.findOneOrFail({
+    const article = await this.articleRepository.findOne({
       where: {
         id: articleId,
       },
     });
+
+    if (!article) {
+      throw new NotFoundException(`Article ${articleId} not found`);
+    }
 
     article.title = input.title;
     article.description = input.description;
@@ -66,17 +77,21 @@ export class ArticleManager {
   }
 
   async delete(articleId: string): Promise<ArticleDeleteOutput> {
-    const article = await this.articleRepository.findOneOrFail({
+    const article = await this.articleRepository.findOne({
       where: {
         id: articleId,
       },
     });
 
+    if (!article) {
+      throw new NotFoundException(`Article ${articleId} not found`);
+    }
+
     await article.remove();
     return { articleId };
   }
 
-  async articles(args: ArticlesPaginatorArgs): Promise<ArticlesPaginator> {
+  async findAll(args: ArticlesPaginatorArgs): Promise<ArticlesPaginator> {
     const queryBuilder = this.articleRepository.createQueryBuilder('article');
     queryBuilder.take(args.take).skip(args.skip);
 
@@ -94,7 +109,7 @@ export class ArticleManager {
     return { results, total };
   }
 
-  async comments(
+  async getComments(
     articleId: string,
     args: PaginatorArgs,
   ): Promise<CommentsPaginator> {

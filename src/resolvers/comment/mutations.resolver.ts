@@ -8,6 +8,7 @@ import {
   CommentCreateInput,
   CommentCreateOutput,
 } from './../../models/comment/create.model';
+import { JwtUser } from './../../models/user/jwt-user.model';
 
 @Resolver(Comment)
 export class CommentMutationsResolver {
@@ -16,7 +17,7 @@ export class CommentMutationsResolver {
   @UseGuards(JwtAuthGuard)
   @Mutation(() => CommentCreateOutput)
   async commentCreate(
-    @CurrentUser() user: any,
+    @CurrentUser() user: JwtUser,
     @Args('input') input: CommentCreateInput,
   ) {
     return await this.commentManager.create(user, input);

@@ -28,6 +28,6 @@ export class ArticleFieldsResolver {
 
   @ResolveField(() => CommentsPaginator)
   async comments(@Parent() article: Article, @Args() args: PaginatorArgs) {
-    return await this.articleManager.comments(article.id, args);
+    return await this.articleManager.getComments(article.id, args);
   }
 }

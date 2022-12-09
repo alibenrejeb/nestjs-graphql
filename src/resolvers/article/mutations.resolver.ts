@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { HttpCode, UseGuards } from '@nestjs/common';
 import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
 import { Article } from '../../entities/article.entity';
 import { ArticleManager } from '../../entity-managers/article.manager';
@@ -13,21 +13,24 @@ import {
 } from '../../models/article/update.model';
 import { JwtAuthGuard } from './../../auths/guards/jwt-auth.guard';
 import { CurrentUser } from './../../decorators/current-user.decorator';
+import { JwtUser } from './../../models/user/jwt-user.model';
 
 @Resolver(Article)
-@UseGuards(JwtAuthGuard)
 export class ArticleMutationsResolver {
   constructor(private readonly articleManager: ArticleManager) {}
 
   @Mutation(() => ArticleCreateOutput)
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(201)
   async articleCreate(
-    @CurrentUser() user: any,
+    @CurrentUser() user: JwtUser,
     @Args('input') input: ArticleCreateInput,
   ) {
     return await this.articleManager.create(user, input);
   }
 
   @Mutation(() => ArticleUpdateOutput)
+  @UseGuards(JwtAuthGuard)
   async articleUpdate(
     @Args({ name: 'articleId', type: () => ID })
     articleId: string,
@@ -37,6 +40,7 @@ export class ArticleMutationsResolver {
   }
 
   @Mutation(() => ArticleDeleteOutput)
+  @UseGuards(JwtAuthGuard)
   async articleDelete(
     @Args({ name: 'articleId', type: () => ID })
     articleId: string,

@@ -26,6 +26,14 @@ export class User extends AbstractEntity {
   @Column({ nullable: true })
   avatar?: string;
 
+  @Field(() => Date, { nullable: true })
+  @Column({ nullable: true })
+  changedPassword?: Date;
+
+  @Field(() => Date, { nullable: true })
+  @Column({ nullable: true })
+  lastLoggedAt?: Date;
+
   @OneToMany(() => Article, (target) => target.author)
   articles: Article[];
 

@@ -10,6 +10,6 @@ export class CommentQueriesResolver {
 
   @Query(() => CommentsPaginator)
   async comments(@Args() args: PaginatorArgs): Promise<CommentsPaginator> {
-    return await this.commentManager.comments(args);
+    return await this.commentManager.findAll(args);
   }
 }

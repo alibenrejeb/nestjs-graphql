@@ -14,6 +14,6 @@ export class ArticleQueriesResolver {
   async articles(
     @Args() args: ArticlesPaginatorArgs,
   ): Promise<ArticlesPaginator> {
-    return await this.articleManager.articles(args);
+    return await this.articleManager.findAll(args);
   }
 }
