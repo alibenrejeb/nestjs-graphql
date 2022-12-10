@@ -34,9 +34,15 @@ export class CommentManager {
     return { comment };
   }
 
-  async findAll(args: PaginatorArgs): Promise<CommentsPaginator> {
+  async findAll(args?: PaginatorArgs): Promise<CommentsPaginator> {
     const queryBuilder = this.commentRepository.createQueryBuilder('comment');
-    queryBuilder.take(args.take).skip(args.skip);
+    if (args.skip) {
+      queryBuilder.skip(args.skip);
+    }
+
+    if (args.take) {
+      queryBuilder.take(args.take);
+    }
 
     if (args.sortBy) {
       for (const [key, value] of Object.entries(args.sortBy)) {

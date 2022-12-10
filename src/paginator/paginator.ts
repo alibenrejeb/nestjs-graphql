@@ -25,11 +25,11 @@ export class PaginatorSortBy {
 
 @ArgsType()
 export class PaginatorArgs {
-  @Field(() => Int)
-  skip: number;
+  @Field(() => Int, { nullable: true })
+  skip?: number;
 
-  @Field(() => Int)
-  take: number;
+  @Field(() => Int, { nullable: true })
+  take?: number;
 
   @Field(() => PaginatorSortBy, { nullable: true })
   sortBy?: PaginatorSortBy;

@@ -5,6 +5,8 @@ import {
   ArticlesPaginator,
   ArticlesPaginatorArgs,
 } from '../../paginator/article.paginator';
+import { FiltersExpression } from '../../query-builder/filters-expression';
+import { ArticleOutput } from './../../models/article/articles.model';
 
 @Resolver(Article)
 export class ArticleQueriesResolver {
@@ -15,5 +17,13 @@ export class ArticleQueriesResolver {
     @Args() args: ArticlesPaginatorArgs,
   ): Promise<ArticlesPaginator> {
     return await this.articleManager.findAll(args);
+  }
+
+  @Query(() => ArticlesPaginator)
+  async getArticles(
+    @Args('filters') filters: FiltersExpression,
+    @Args() args: ArticlesPaginatorArgs,
+  ): Promise<ArticlesPaginator> {
+    return this.articleManager.getArticles(filters, args);
   }
 }

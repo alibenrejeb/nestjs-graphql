@@ -41,7 +41,7 @@ type Article {
   description: String!
   image: String!
   author: User
-  comments(skip: Int!, take: Int!, sortBy: PaginatorSortBy): CommentsPaginator!
+  comments(skip: Int, take: Int, sortBy: PaginatorSortBy): CommentsPaginator!
 }
 
 input PaginatorSortBy {
@@ -97,13 +97,49 @@ type ChangePasswordOutput {
 }
 
 type Query {
-  articles(skip: Int!, take: Int!, sortBy: ArticlesPaginatorSortBy): ArticlesPaginator!
-  comments(skip: Int!, take: Int!, sortBy: PaginatorSortBy): CommentsPaginator!
+  articles(skip: Int, take: Int, sortBy: ArticlesPaginatorSortBy): ArticlesPaginator!
+  getArticles(filters: FiltersExpression!, skip: Int, take: Int, sortBy: ArticlesPaginatorSortBy): ArticlesPaginator!
+  comments(skip: Int, take: Int, sortBy: PaginatorSortBy): CommentsPaginator!
 }
 
 input ArticlesPaginatorSortBy {
   createdAt: SortBy
   title: SortBy
+}
+
+input FiltersExpression {
+  operator: Operator!
+  filters: [Filter!]!
+  joinExpressions: [JoinExpressions!]
+}
+
+enum Operator {
+  AND
+  OR
+}
+
+input Filter {
+  op: Operation!
+  values: [String!]!
+  field: String!
+}
+
+enum Operation {
+  EQ
+  IN
+  LIKE
+  GE
+}
+
+input JoinExpressions {
+  filters: [JoinFilter!]!
+}
+
+input JoinFilter {
+  op: Operation!
+  values: [String!]!
+  field: String!
+  relation: String!
 }
 
 type Mutation {

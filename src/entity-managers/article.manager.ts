@@ -1,3 +1,7 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { SelectQueryBuilder } from 'typeorm/query-builder/SelectQueryBuilder';
 import { JwtUser } from './../models/user/jwt-user.model';
 import { CommentsPaginator } from './../paginator/comment.paginator';
 import {
@@ -8,10 +12,7 @@ import {
   ArticleCreateInput,
   ArticleCreateOutput,
 } from '../models/article/create.model';
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from '../entities/article.entity';
-import { Repository } from 'typeorm';
 import { ArticleDeleteOutput } from '../models/article/delete.model';
 import {
   ArticlesPaginator,
@@ -20,6 +21,9 @@ import {
 import { User } from './../entities/user.entity';
 import { Comment } from './../entities/comment.entity';
 import { PaginatorArgs } from './../paginator/paginator';
+import { FiltersExpression } from '../query-builder/filters-expression';
+import { QueryBuilder } from '../query-builder/query-builder';
+import { ArticleOutput } from './../models/article/articles.model';
 
 @Injectable()
 export class ArticleManager {
@@ -106,6 +110,21 @@ export class ArticleManager {
 
     const [results, total] = await queryBuilder.getManyAndCount();
 
+    return { results, total };
+  }
+
+  async getArticles(
+    filters: FiltersExpression,
+    args: ArticlesPaginatorArgs,
+  ): Promise<ArticlesPaginator> {
+    const queryBuilder = new QueryBuilder<Article>(
+      this.articleRepository,
+      filters,
+      args,
+    );
+    const qb: SelectQueryBuilder<Article> = queryBuilder.build();
+
+    const [results, total] = await qb.getManyAndCount();
     return { results, total };
   }
 
