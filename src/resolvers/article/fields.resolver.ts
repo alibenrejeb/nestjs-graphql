@@ -28,12 +28,15 @@ export class ArticleFieldsResolver {
   }
 
   @ResolveField(() => CommentsPaginator)
-  async comments(@Parent() article: Article, @Args() args: PaginatorArgs): Promise<CommentsPaginator>  {
+  async comments(
+    @Parent() article: Article,
+    @Args() args: PaginatorArgs,
+  ): Promise<CommentsPaginator> {
     return await this.articleManager.getComments(article.id, args);
   }
 
   @ResolveField(() => UsersPaginator)
-  async likes(@Parent() article: Article): Promise<UsersPaginator>  {
+  async likes(@Parent() article: Article): Promise<UsersPaginator> {
     return await this.articleManager.getLikes(article.id);
   }
 }

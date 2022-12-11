@@ -29,6 +29,7 @@ import { FiltersExpression } from '../query-builder/filters-expression';
 import { QueryBuilder } from '../query-builder/query-builder';
 import { ArticleLikeOutput } from './../models/article/like.model';
 import { UsersPaginator } from './../paginator/user.paginator';
+import { ArticleFilterArgs } from './../filters/article.filter';
 
 @Injectable()
 export class ArticleManager {
@@ -102,8 +103,15 @@ export class ArticleManager {
     return { articleId };
   }
 
-  async findAll(args: ArticlesPaginatorArgs): Promise<ArticlesPaginator> {
+  async findAll(args: ArticleFilterArgs): Promise<ArticlesPaginator> {
     const queryBuilder = this.articleRepository.createQueryBuilder('article');
+
+    for (const [key, value] of Object.entries(args.filters)) {
+      queryBuilder.andWhere(`${key} LIKE :key`, {
+        key: `%${args.filters[key]}%`,
+      });
+    }
+
     queryBuilder.take(args.take).skip(args.skip);
 
     if (args.sortBy) {

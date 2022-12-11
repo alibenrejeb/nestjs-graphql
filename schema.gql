@@ -107,14 +107,14 @@ type ChangePasswordOutput {
 }
 
 type Query {
-  articles(skip: Int, take: Int, sortBy: ArticlesPaginatorSortBy): ArticlesPaginator!
+  articles(sortBy: PaginatorSortBy, skip: Int, take: Int, filters: ArticleFilterInput): ArticlesPaginator!
   getArticles(filters: FiltersExpression!, skip: Int, take: Int, sortBy: ArticlesPaginatorSortBy): ArticlesPaginator!
   comments(skip: Int, take: Int, sortBy: PaginatorSortBy): CommentsPaginator!
 }
 
-input ArticlesPaginatorSortBy {
-  createdAt: SortBy
-  title: SortBy
+input ArticleFilterInput {
+  title: String
+  description: String
 }
 
 input FiltersExpression {
@@ -150,6 +150,11 @@ input JoinFilter {
   values: [String!]!
   field: String!
   relation: String!
+}
+
+input ArticlesPaginatorSortBy {
+  createdAt: SortBy
+  title: SortBy
 }
 
 type Mutation {
