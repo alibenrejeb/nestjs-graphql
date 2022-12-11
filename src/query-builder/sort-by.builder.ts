@@ -10,7 +10,10 @@ export class SortByBuilder<Entity> {
   build() {
     if (this.paginatorArgs && this.paginatorArgs.sortBy) {
       for (const [key, value] of Object.entries(this.paginatorArgs.sortBy)) {
-        this.qb.addOrderBy(`Article.${key}`, this.paginatorArgs.sortBy[key] ? 'DESC' : 'ASC');
+        this.qb.addOrderBy(
+          `Article.${key}`,
+          this.paginatorArgs.sortBy[key] ? 'DESC' : 'ASC',
+        );
       }
     }
   }

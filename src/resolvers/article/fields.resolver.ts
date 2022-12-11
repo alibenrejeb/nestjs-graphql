@@ -1,3 +1,4 @@
+import { UsersPaginator } from './../../paginator/user.paginator';
 import { Args, Parent, ResolveField, Resolver } from '@nestjs/graphql';
 import { PaginatorArgs } from './../../paginator/paginator';
 import { Article } from './../../entities/article.entity';
@@ -27,7 +28,12 @@ export class ArticleFieldsResolver {
   }
 
   @ResolveField(() => CommentsPaginator)
-  async comments(@Parent() article: Article, @Args() args: PaginatorArgs) {
+  async comments(@Parent() article: Article, @Args() args: PaginatorArgs): Promise<CommentsPaginator>  {
     return await this.articleManager.getComments(article.id, args);
+  }
+
+  @ResolveField(() => UsersPaginator)
+  async likes(@Parent() article: Article): Promise<UsersPaginator>  {
+    return await this.articleManager.getLikes(article.id);
   }
 }

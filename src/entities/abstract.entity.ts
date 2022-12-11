@@ -14,10 +14,14 @@ export abstract class AbstractEntity extends BaseEntity {
   id: string;
 
   @Field(() => Date)
-  @CreateDateColumn()
+  @CreateDateColumn({
+    name: 'created_at',
+  })
   createdAt: Date;
 
   @Field(() => Date)
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    name: 'update_at',
+  })
   updatedAt: Date;
 }

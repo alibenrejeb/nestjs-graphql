@@ -67,7 +67,7 @@ export class UserManager {
     }
 
     user.password = bcrypt.hashSync(input.newPassword);
-    user.changedPassword = new Date();
+    user.passwordChangedAt = new Date();
     await user.save();
 
     return { message: 'Password changed !' };

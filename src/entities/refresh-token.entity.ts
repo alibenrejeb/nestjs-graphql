@@ -11,7 +11,7 @@ export class RefreshToken extends AbstractEntity {
   token: string;
 
   @OneToOne(() => User)
-  @JoinColumn()
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @RelationId((self: RefreshToken) => self.user)

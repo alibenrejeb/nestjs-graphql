@@ -14,6 +14,7 @@ import {
 import { JwtAuthGuard } from './../../auths/guards/jwt-auth.guard';
 import { CurrentUser } from './../../decorators/current-user.decorator';
 import { JwtUser } from './../../models/user/jwt-user.model';
+import { ArticleLikeOutput } from './../../models/article/like.model';
 
 @Resolver(Article)
 export class ArticleMutationsResolver {
@@ -46,5 +47,15 @@ export class ArticleMutationsResolver {
     articleId: string,
   ) {
     return await this.articleManager.delete(articleId);
+  }
+
+  @Mutation(() => ArticleLikeOutput)
+  @UseGuards(JwtAuthGuard)
+  async like(
+    @CurrentUser() user: JwtUser,
+    @Args({ name: 'articleId', type: () => ID }) articleId: string,
+    @Args({ name: 'like', type: () => Boolean }) like: boolean,
+  ) {
+    return await this.articleManager.like(user, articleId, like);
   }
 }

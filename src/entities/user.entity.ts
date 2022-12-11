@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany, ManyToMany } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { AbstractEntity } from './abstract.entity';
 import { Article } from './article.entity';
@@ -27,11 +27,11 @@ export class User extends AbstractEntity {
   avatar?: string;
 
   @Field(() => Date, { nullable: true })
-  @Column({ nullable: true })
-  changedPassword?: Date;
+  @Column({ name: 'password_changed_at', nullable: true })
+  passwordChangedAt?: Date;
 
   @Field(() => Date, { nullable: true })
-  @Column({ nullable: true })
+  @Column({ name: 'last_logged_at', nullable: true })
   lastLoggedAt?: Date;
 
   @OneToMany(() => Article, (target) => target.author)

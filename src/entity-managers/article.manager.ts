@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SelectQueryBuilder } from 'typeorm/query-builder/SelectQueryBuilder';
@@ -23,7 +27,8 @@ import { Comment } from './../entities/comment.entity';
 import { PaginatorArgs } from './../paginator/paginator';
 import { FiltersExpression } from '../query-builder/filters-expression';
 import { QueryBuilder } from '../query-builder/query-builder';
-import { ArticleOutput } from './../models/article/articles.model';
+import { ArticleLikeOutput } from './../models/article/like.model';
+import { UsersPaginator } from './../paginator/user.paginator';
 
 @Injectable()
 export class ArticleManager {
@@ -32,6 +37,8 @@ export class ArticleManager {
     private readonly articleRepository: Repository<Article>,
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async findOneById(id: string): Promise<Article> {
@@ -146,5 +153,65 @@ export class ArticleManager {
     });
 
     return { results, total };
+  }
+
+  async getLikes(articleId: string): Promise<UsersPaginator> {
+    const article = await this.articleRepository.findOne({
+      relations: ['likes'],
+      where: {
+        id: articleId,
+      },
+    });
+
+    return {
+      results: article.likes,
+      total: article.likes.length,
+    };
+  }
+
+  async like(
+    jwtUser: JwtUser,
+    articleId: string,
+    like: boolean,
+  ): Promise<ArticleLikeOutput> {
+    const article = await this.articleRepository.findOne({
+      relations: ['likes'],
+      where: {
+        id: articleId,
+      },
+    });
+
+    if (!article) {
+      throw new NotFoundException(`Article ${articleId} not found`);
+    }
+
+    const user = await this.userRepository.findOne({
+      where: {
+        id: jwtUser.sub,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User ${articleId} not found`);
+    }
+
+    const index = article.likes.findIndex((like) => like.id === user.id);
+
+    if (like && index > -1) {
+      throw new BadRequestException(
+        `The article ${article.id} has already liked by ${user.id}`,
+      );
+    }
+
+    if (!like && index === -1) {
+      throw new BadRequestException(
+        `The article ${article.id} is already disliked`,
+      );
+    }
+
+    like ? article.like(user) : article.dislike(user);
+    await article.save();
+
+    return { article };
   }
 }

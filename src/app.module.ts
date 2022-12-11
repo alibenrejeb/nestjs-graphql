@@ -55,7 +55,7 @@ import { RefreshTokenMutationsResolver } from './resolvers/refresh-token/mutatio
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get('JWT_SECRET_KEY'),
-        signOptions: { expiresIn: '5m' },
+        signOptions: { expiresIn: '1h' },
       }),
     }),
   ],

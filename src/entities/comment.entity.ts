@@ -12,14 +12,14 @@ export class Comment extends AbstractEntity {
   message: string;
 
   @ManyToOne(() => User, (user) => user.comments)
-  @JoinColumn()
+  @JoinColumn({ name: 'author_id' })
   author: User;
 
   @RelationId((self: Comment) => self.author)
   readonly authorId: string;
 
   @ManyToOne(() => Article, (article) => article.comments)
-  @JoinColumn()
+  @JoinColumn({ name: 'article_id' })
   article: Article;
 
   @RelationId((self: Comment) => self.article)

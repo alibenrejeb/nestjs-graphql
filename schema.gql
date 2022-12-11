@@ -29,7 +29,7 @@ type User {
   firstname: String!
   lastname: String!
   avatar: String
-  changedPassword: DateTime
+  passwordChangedAt: DateTime
   lastLoggedAt: DateTime
 }
 
@@ -42,6 +42,7 @@ type Article {
   image: String!
   author: User
   comments(skip: Int, take: Int, sortBy: PaginatorSortBy): CommentsPaginator!
+  likes: UsersPaginator!
 }
 
 input PaginatorSortBy {
@@ -65,6 +66,10 @@ type ArticleUpdateOutput {
   article: Article!
 }
 
+type ArticleLikeOutput {
+  article: Article!
+}
+
 type ArticlesPaginator {
   total: Float!
   results: [Article!]!
@@ -81,6 +86,11 @@ type AuthTokenOutput {
 type AuthLoginOutput {
   accessToken: String!
   refreshToken: String!
+}
+
+type UsersPaginator {
+  total: Float!
+  results: [User!]!
 }
 
 type CommentsPaginator {
@@ -146,6 +156,7 @@ type Mutation {
   articleCreate(input: ArticleCreateInput!): ArticleCreateOutput!
   articleUpdate(articleId: ID!, input: ArticleUpdateInput!): ArticleUpdateOutput!
   articleDelete(articleId: ID!): ArticleDeleteOutput!
+  like(articleId: ID!, like: Boolean!): ArticleLikeOutput!
   userCreate(input: UserCreateInput!): UserCreateOutput!
   commentCreate(input: CommentCreateInput!): CommentCreateOutput!
   login(username: String!, password: String!): AuthLoginOutput!
